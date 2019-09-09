@@ -1,20 +1,18 @@
 {
-    "name": "acquia/lightning-project",
-    "description": "Project template for Drupal 8 sites built with the Lightning distribution",
+    "name": "va-gov/cms",
+    "description": "The CMS for VA.gov",
     "type": "project",
     "license": "GPL-2.0+",
     "minimum-stability": "dev",
     "prefer-stable": true,
     "require-dev": {
-        "drush/drush": "^9.0",
         "drupal/media_entity_generic": "^1.0",
-        "acquia/lightning_dev": "dev-8.x-1.x",
         "acquia/drupal-spec-tool": "^2.0"
     },
     "require": {
         "acquia/headless_lightning": "^1.4.0-beta2",
-        "behat/behat": "^3.4",
         "cweagans/composer-patches": "^1.6.0",
+        "devshop/behat-drupal-extension": "dev-rewrite-last-page-output-links",
         "drupal-composer/drupal-scaffold": "^2.0.0",
         "drupal/address": "^1.4",
         "drupal/admin_toolbar": "^1.24",
@@ -23,12 +21,13 @@
         "drupal/block_content_permissions": "^1.6",
         "drupal/block_visibility_groups": "^1.3",
         "drupal/cer": "^4.0@alpha",
+        "drupal/coder": "~8.2.12",
         "drupal/components": "^1.0",
         "drupal/config_split": "^1.4",
         "drupal/content_lock": "^1.0@alpha",
         "drupal/cshs": "^1.0@beta",
-        "drupal/default_content": "^1.0@alpha",
-        "drupal/drupal-extension": "^3.4",
+        "drupal/devel": "^2.1",
+        "drupal/entity_clone": "^1.0@beta",
         "drupal/entity_reference_unpublished": "^1.1",
         "drupal/entityqueue": "^1.0@beta",
         "drupal/environment_indicator": "^3.5",
@@ -40,10 +39,13 @@
         "drupal/health_check": "^1.0",
         "drupal/health_check_url": "^2.1",
         "drupal/hide_revision_field": "^2.1",
+        "drupal/kint": "^2.1",
+        "drupal/linkit": "5.x-dev",
         "drupal/markdown": "^1.2",
         "drupal/markup": "^1.0@beta",
         "drupal/menu_breadcrumb": "^1.8",
         "drupal/menu_export": "^1.2",
+        "drupal/menu_item_extras": "^2.7",
         "drupal/migrate_plus": "^4.0",
         "drupal/migrate_source_csv": "^2.2",
         "drupal/migrate_tools": "^4.0",
@@ -72,19 +74,27 @@
         "drupal/tour_ui": "^1.0@beta",
         "drupal/ui_patterns": "^1.0",
         "drupal/uswds": "^1.0@beta",
+        "drupal/views_bulk_edit": "^2.3",
         "drupal/views_bulk_operations": "^2.5",
         "drupal/views_tree": "^2.0@alpha",
         "drupal/workbench_access": "^1.0@beta",
         "drupal/workbench_menu_access": "^1.0",
+        "drupal/workflow_participants": "^2.4",
         "drupal/xmlsitemap": "^1.0@alpha",
         "drush-ops/behat-drush-endpoint": "^0.0.4",
+        "drush/drush": "~8.3",
+        "guzzlehttp/guzzle": "^6.0@dev",
         "michelf/php-markdown": "^1.8",
         "mouf/nodejs-installer": "^1.0",
         "npm-asset/yarn": "1.12.3",
         "phpunit/phpunit": "^6",
+        "provision-ops/yaml-tests": "^1.7",
         "querypath/querypath": "^3.0",
         "simplesamlphp/simplesamlphp": "^1.17",
-        "twig/twig": "1.37.1",
+        "symfony/config": "^3.4",
+        "symfony/finder": "^3",
+        "symfony/phpunit-bridge": "^4.3",
+        "twig/twig": "~1.37.1",
         "va-gov/web": "dev-VAGOV-2937-unity",
         "webflo/drupal-finder": "^1.0.0",
         "webmozart/path-util": "^2.3",
@@ -93,8 +103,12 @@
     },
     "autoload": {
         "psr-4": {
-            "Traits\\": "tests/traits"
-        }
+            "Traits\\": "tests/traits",
+            "CustomDrupal\\": "tests/behat/Drupal"
+        },
+        "files": [
+            "scripts/composer/EnvironmentHandler.php"
+        ]
     },
     "repositories": {
         "va-gov-web":   {
@@ -105,7 +119,7 @@
                 "source": {
                     "url": "https://github.com/department-of-veterans-affairs/vets-website",
                     "type": "git",
-                    "reference": "origin/VAGOV-2937-unity"
+                    "reference": "e76d8b6e1ae5fddc9c3f629b76c082e2d956ee8f"
                 }
             }
         },
@@ -200,6 +214,10 @@
             "drupal/ics_field": {
                 "Include end date / time in ICS file.": "https://www.drupal.org/files/issues/2018-10-06/ics_field-2852239-11.patch"
             },
+            "drupal/linkit": {
+                "Adds field level linkit functionality.": "https://www.drupal.org/files/issues/2019-07-25/linkit_modified_patch-118-123.patch",
+                "Fix broken autocomplete.js loading.": "https://www.drupal.org/files/issues/2018-07-19/linkit_autocomplete_not_loaded-2973181-4.patch"
+            },
             "drupal/menu_link_content": {
                 "Fix php warning when creating new items": "https://www.drupal.org/files/issues/updateLink-2775665-2.patch"
             },
@@ -216,6 +234,9 @@
             },
             "drupal/textfield_counter": {
                 "Prevent form submission when character limit exceeded option does not work": "https://www.drupal.org/files/issues/2018-10-04/textfield_counter-prevent_form_submission_does_not_work-3004457-2.patch"
+            },
+            "drupal/workflow_participants": {
+                "Fix revision uncaught type error by extending class.": "https://www.drupal.org/files/issues/2019-08-16/workflow_participants-revision-error-3075426-1.patch"
             }
         }
     },
@@ -243,7 +264,7 @@
             "php -r \"chmod('.git/hooks/pre-commit', 0777);\"",
             "php -r \"chmod('.git/hooks/commit-msg', 0777);\""
         ],
-        "nuke": "rm -r -f docroot/modules/contrib docroot/profiles/contrib/lightning vendor composer.lock",
+        "nuke": "rm --recursive --force bin docroot/libraries docroot/core docroot/modules/contrib docroot/themes/contrib docroot/profiles/contrib/ docroot/vendor",
         "va:start": [
           "@composer install --ansi",
           "@va:install",
@@ -289,8 +310,8 @@
         "va:test:cs": [
             "phpcs --ignore=*.md,*.min.css,uswds.css,*/node_modules/*,*/simplesaml*/* --standard=./docroot/vendor/drupal/coder/coder_sniffer/Drupal/ruleset.xml docroot/modules/custom docroot/themes/custom --colors"
         ],
-        "va:test:unit": "phpunit tests/phpunit --colors=always",
-        "va:cbf": "phpcbf  --standard=./docroot/vendor/drupal/coder/coder_sniffer/Drupal/ruleset.xml -n docroot/modules/custom docroot/themes/custom --colors",
+        "va:test:unit": "phpunit tests/phpunit --colors=always --exclude-group=disabled",
+        "va:cbf": "phpcbf --ignore=*.md,*.min.css,uswds.css,*/node_modules/*,*/simplesaml*/* --standard=./docroot/vendor/drupal/coder/coder_sniffer/Drupal/ruleset.xml docroot/modules/custom docroot/themes/custom --colors",
         "va:web:install":  [
             "# Preparing Front-end...",
             "cd bin && ln -sf ../docroot/libraries/yarn/bin/yarn yarn",
@@ -310,7 +331,10 @@
             "@va:web:watch"
         ],
         "va:web:build": [
-            "cd web && npm run build -- --buildtype=${envName} --asset-source=${assetSource} --drupal-address=${drupalAddress} ${drupalMode}"
+            "cd web && npm run build -- --pull-drupal"
+        ],
+        "va:web:test": [
+            "echo 'drupal address: ' $DRUPAL_ADDRESS"
         ]
     }
 }

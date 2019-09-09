@@ -6,13 +6,27 @@ This is the Content Management System and API for VA.gov.
 
 It is an Aquia Lightning based implementation of Drupal 8.
 
+Table of Contents
+=================
+
+1. **Developer Info**
+    1. [Project Conventions](READMES/project-conventions.md)
+    1. [Environements](READMES/environments.md)
+        1. [Builds](READMES/builds.md)
+    1. [Testing](READMES/testing.md)
+    1. [Debugging](READMES/debugging.md)
+1. **Architecture**
+    1. Overview
+    1. Drupal
+    1. MetalSmith
+    1. [Interfaces](READMES/interfaces.md)
+
+
+This is an Aquia Lightning based implementation of Drupal 8 that uses [Lando](https://docs.devwithlando.io/) for local container management.
+
 ## Get Started
 
-### Domains
-Domains for this application are below, they both correspond to a frontend (FE) domain that consumes data from the CMS via GraphQL API endpoint at /graphql:
-* dev.cms.va.gov (FE dev.va.gov)
-* staging.cms.va.gov (FE staging.va.gov)
-* prod.va.gov (FE www.va.gov)
+
 
 ## HTTPS browser setup for production usage
 All computers in VA already have this setup, if you are using a non-VA laptop for development you will need to trust the VA Root Certificate Authority (CA) in your browser(s).
@@ -32,6 +46,16 @@ Firefox
 * Click "Import"
 * Import both files downloaded above
 
+Lando
+* `rebuild lando -y`
+
+Since this is a Drupal site, it can be launched with any Drupal development tool.
+
+For regular development, the DSVA team uses [Lando](https://docs.devwithlando.io/) for local container management.
+
+For testing and simple development, you can use the special Composer commands and Drupal Console to launch on any system 
+with PHP-CLI and SQLite.
+
 ## HTTPS testing (locally/Lando)
 You can't test with the VA cert locally using Lando but you can use Lando's self-signed cert. If you need to test the actual cert locally contact the DevOps team to help you setup the vagrant build system to get HTTPS working with VA CA.
 
@@ -42,15 +66,59 @@ TODO, create upstream PR with `sudo trust anchor --store ~/.lando/certs/lndo.sit
 Note: I had to still import that same CA into Chrome.
 Go to chrome://settings/certificates?search=https
 Click "Authorities"
-Import `.lando\certs\lndo.site.pem` 
+Import `.lando\certs\lndo.site.pem`
 
-### Custom Composer Scripts
-Since this is a Drupal site, it can be launched with any Drupal development tool.
+## Custom Composer Scripts
 
-For regular development, the DSVA team uses [Lando](https://docs.devwithlando.io/) for local container management.
+There are a number of helpful composer "scripts" available, located in the [composer.json](composer.json) file, in the `scripts` section. These scripts get loaded in as composer commands.
 
-For testing and simple development, you can use the special Composer commands and Drupal Console to launch on any system 
-with PHP-CLI and SQLite.
+Change to the CMS repositiory directory and run `composer` to list all commands, both built in and ones from this repo.
+
+The VA.gov project has the following custom commands.
+
+1. `set-path`
+
+    Use `composer set-path` command to print out the needed PATH variable to allow running any command in the `./bin` directory just by it's name.
+
+    For example:
+
+    ```bash
+    $  composer set-path
+    > # Run the command output below to set your current terminal PATH variable.
+    > # This will allow you to run any command in the ./bin directory without a path.
+    > echo "export PATH=${PATH}"
+    export PATH=/Users/VaDeveloper/Projects/VA/va.gov-cms/bin:/usr/local/bin:/usr/local/sbin:/usr/bin:/usr/sbin
+    ```
+
+    Then, copy the last line (with all of the paths) and paste it into your desired terminal, and hit ENTER.
+
+    Once the path is set, you can run any of the commands listed in the [bin directory](bin) directly:
+
+    ```bash
+    $ phpcs --version
+    PHP_CodeSniffer version 2.9.2 (stable) by Squiz (http://www.squiz.net)
+    ```
+
+    The path will remain in place as you change directories.
+
+
+2. `va:proxy:start`
+
+    Simply runs the "socks proxy" command which is needed to connect to the VA.gov network. Add the `&` character to run it as a background process.
+
+3. `va:proxy:test`
+
+    Test the proxy when it is running.
+
+4. `nuke`
+
+    Removes all composer installed directories, useful when you manually
+    made changes to any files inside a composer managed directory. e.g.
+    docroot/core, docroot/vendor.
+
+@TODO: Document all of the custom composer commands.
+
+See https://getcomposer.org/doc/articles/scripts.md for more information on how to create and manage scripts.
 
 ## VA.gov WEB
 
@@ -58,10 +126,20 @@ This Drupal site acts solely as a CMS and API. The actual website for va.gov is 
 
 The `WEB` project is built on Metalsmith. The project consumes the Drupal CMS GraphQL endpoint and generates static files for VA.gov.
 
-## Unity Initiative
+## WEB+CMS Unity Initiative
 
 This repository now includes the vets-website project, and it is built on `composer install`. 
 
+The "Unification" or "Unity" initiative aims to stabilize the project by unifying the codebases to allow for paired releases.
+
+This has many benefits:
+
+- Prepare the source code for the entire project, CMS+WEB in a single command. 
+- Run instances of CMS and WEB site by side, locked into the right versions.
+- Run tests against BOTH CMS and WEB to ensure compatibility.
+- Release both projects at once. CMS is handled as a dependency of WEB, so we can tag a release of web, then tag a release of CMS that is locked to that release of WEB.
+
+See `composer.json` `scripts.va:web:install` section for the code that triggers the WEB build process.
 The "Unification" or "Unity" initiative aims to stabilize the project by unifying the codebases to allow for paired releases.
 
 This has many benefits:
@@ -81,7 +159,6 @@ See `composer.json` `scripts.va:web:install` section for the code that triggers 
     ```bash 
     $ git clone git@github.com:department-of-veterans-affairs/va.gov-cms.git
     $ cd va.gov-cms
-    ```
 3. Install and Launch
  
     Run the "va:start" composer command to install and launch a local instance of cms.va.gov:
@@ -179,26 +256,6 @@ Theme structure (project is headless, so this isn't critical):
 * vagov Subtheme lives in themes/custom
 
 
-### Testing
-
-There's a new command to run all tests on the codebase in the same way they are run in CI:
-
-    ```
-    composer yaml-tests
-    ```
-
-Check out the file `tests.yml` for the list of tests that are included in the automated testing system.
-
-Running Behat Tests:
-* `cd tests/behat`
-* `lando behat --tags=name-of-tag`
-
-Running Phpunit Tests:
-* `cd tests`
-* `lando phpunit {Path-to-test}`
-to run a test group use
-* `lando phpunit . --group security`
-
 ### Patching
 
 Apply patches:
@@ -206,7 +263,7 @@ Apply patches:
   * example" https://patch-diff.githubusercontent.com/raw/drupal-graphql/graphql/pull/726.patch
   * for Github, you can usually type in `.patch` at the end of the PR url to get the patch file
   * some people use github, some use drupal.org. drupal is moving to gitlab
-* In the "`patches`" property of `composer.json`, make an entry for the package you are patching, if not already there, write an explanation lando sync-dbas to what the patch does, and then put the url to the patch 
+* In the "`patches`" property of `composer.json`, make an entry for the package you are patching, if not already there, write an explanation lando sync-dbas to what the patch does, and then put the url to the patch
   * ex:
   * ```
     "patches": {
@@ -234,25 +291,6 @@ Contact Mouncif or Elijah in Slack #cms-engineering to obtain these ENV variable
 
 Trigger local build of Drupal content in vets-website `yarn build --pull-drupal`
 
-Naming Conventions:
-* Modules: `vagov_modulename`
-* Content types: `vagov_contentype`
-* Fields: `field_[contenttypename]_fieldname`
-
-Xdebug:
-* Setup:
-    * Enable Xdebug by uncommenting the `xdebug: true` line in .lando.yml
-    * Run `lando rebuild`
-    * Configure PHPStorm: Go to Settings > Languages & Frameworks > PHP > Debug
-    * Check "allow connections" and ensure max connections is 2
-    * Enable "Start listening for PHP debug connections"
-* Browser:
-    * Open index.php and set a test breakpoint on the first line ($autoloader)
-    * Go to vagovcms.lndo.site in your browser (no extension needed) and it should trigger an "incoming connection" in PHPStorm, accept it
-* CLI:
-    * Open Settings > Languages & Frameworks > PHP > Servers and change the server name to "appserver"
-    * Set a test breakpoint on /docroot/vendor/drush/drush/drush
-    * Run `lando drush status` and it should trigger the breakpoint
 
 Troubleshooting:
 * Sometimes after initial setup or `lando start`, Drush is not found. Running `lando rebuild -y` once or twice usually cures, if not, see: https://github.com/lando/lando/issues/580#issuecomment-354490298
@@ -345,4 +383,3 @@ See https://getcomposer.org/doc/articles/scripts.md for more information on how 
 # Branches
 
 The `develop` branch is now protected. It requires tests to pass and a manual review to be merged.
-

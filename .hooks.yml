@@ -1,13 +1,11 @@
+# This file is needed for us to customize what devshop does.
+#
+# It can be removed once devshop supports yaml-tests natively.
 
 deploy: |
-  echo "Skipping deploy.yml hooks, since they are run in the 'test' task."
-  echo "This command SHOULD be run during a real deployment to production, where tests.yml will not be run."
+# @TODO: Change this to a yaml-tests call with a filter for "va/deploy", once global yaml tests
+#  composer yaml-tests --tests-file=deploy.yml --ansi
 
-# Current Deploy command: This runs all hooks: cache rebuild, config import, etc.
-# composer yaml-tests --tests-file=deploy.yml --ansi
-
-# Fires after "Run Tests" task.
 test: |
-  echo "Running test hooks from hooks.yml in the $DEVSHOP_ENVIRONMENT environment for the $DEVSHOP_PROJECT..."
-  env | grep GITHUB_TOKEN
-  composer yaml-tests --ansi
+  echo "Running `composer yaml-tests` on tests.yml..."
+  composer yaml-tests --tests-file=tests.yml --ansi

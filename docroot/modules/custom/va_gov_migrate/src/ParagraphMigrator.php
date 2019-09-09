@@ -59,7 +59,7 @@ class ParagraphMigrator {
    *
    * @throws \Drupal\Component\Plugin\Exception\InvalidPluginDefinitionException
    * @throws \Drupal\Component\Plugin\Exception\PluginNotFoundException
-   * @throws MigrateException
+   * @throws \Drupal\migrate\MigrateException
    */
   public function __construct(MigratePostRowSaveEvent $event = NULL) {
     if (empty($event)) {
@@ -223,14 +223,20 @@ class ParagraphMigrator {
       return;
     }
 
+    // Wrap any plain text in p tags so it'll work with paragraph testers.
     /** @var \QueryPath\DOMQuery $element */
     foreach ($query_path as $element) {
-
-      // This is just text, so add it to the wysiwyg.
+      // This is just text.
       if (get_class($element->get(0)) != 'DOMElement') {
         if (!empty(trim($element->html()))) {
-          $this->wysiwyg .= $element->html();
+          $element->after('<p>' . $element->html() . '</p>');
         }
+      }
+    }
+
+    foreach ($query_path as $element) {
+      // We created a wrapped duplicate of plain text above, so ignore it here.
+      if (get_class($element->get(0)) != 'DOMElement') {
         continue;
       }
       $found_paragraph = FALSE;
@@ -398,7 +404,7 @@ class ParagraphMigrator {
 
     // Remove wrappers added by htmlqp().
     while (in_array($query_path->tag(), ['html', 'body'])) {
-      $query_path = $query_path->children();
+      $query_path = $query_path->contents();
     }
 
     return $query_path;

@@ -7,6 +7,7 @@ dependencies:
     - field.field.node.landing_page.field_administration
     - field.field.node.landing_page.field_alert
     - field.field.node.landing_page.field_description
+    - field.field.node.landing_page.field_home_page_hub_label
     - field.field.node.landing_page.field_intro_text
     - field.field.node.landing_page.field_links
     - field.field.node.landing_page.field_meta_tags
@@ -17,6 +18,7 @@ dependencies:
     - field.field.node.landing_page.field_related_links
     - field.field.node.landing_page.field_spokes
     - field.field.node.landing_page.field_support_services
+    - field.field.node.landing_page.field_teaser_text
     - field.field.node.landing_page.field_title_icon
     - node.type.landing_page
   module:
@@ -25,7 +27,7 @@ dependencies:
     - field_group
     - hide_revision_field
     - inline_entity_form
-    - link
+    - linkit
     - metatag
     - paragraphs
     - path
@@ -37,7 +39,7 @@ third_party_settings:
         - field_administration
         - field_plainlanguage_date
       parent_name: ''
-      weight: 7
+      weight: 8
       format_type: details_sidebar
       format_settings:
         open: '1'
@@ -53,7 +55,7 @@ third_party_settings:
         - field_links
         - field_support_services
       parent_name: ''
-      weight: 4
+      weight: 5
       format_type: details_sidebar
       format_settings:
         id: ''
@@ -69,7 +71,7 @@ third_party_settings:
         - moderation_state
         - revision_log
       parent_name: ''
-      weight: 9
+      weight: 10
       format_type: details
       format_settings:
         id: ''
@@ -82,7 +84,7 @@ third_party_settings:
       children:
         - field_page_last_built
       parent_name: ''
-      weight: 8
+      weight: 9
       format_type: details_sidebar
       format_settings:
         id: ''
@@ -96,8 +98,10 @@ third_party_settings:
       children:
         - field_title_icon
         - title
+        - field_home_page_hub_label
         - field_meta_title
         - field_description
+        - field_teaser_text
         - field_intro_text
       parent_name: ''
       weight: 0
@@ -153,7 +157,7 @@ content:
     type: options_select
     region: content
   field_description:
-    weight: 5
+    weight: 6
     settings:
       size: 300
       placeholder: ''
@@ -166,8 +170,16 @@ content:
     third_party_settings: {  }
     type: string_textfield_with_counter
     region: content
+  field_home_page_hub_label:
+    weight: 4
+    settings:
+      size: 60
+      placeholder: ''
+    third_party_settings: {  }
+    type: string_textfield
+    region: content
   field_intro_text:
-    weight: 6
+    weight: 8
     settings:
       rows: 5
       placeholder: ''
@@ -175,21 +187,22 @@ content:
     type: string_textarea
     region: content
   field_links:
-    type: link_default
+    type: linkit
     weight: 19
     region: content
     settings:
       placeholder_url: ''
       placeholder_title: ''
+      linkit_profile: default
     third_party_settings: {  }
   field_meta_tags:
-    weight: 6
+    weight: 7
     settings: {  }
     third_party_settings: {  }
     type: metatag_firehose
     region: content
   field_meta_title:
-    weight: 4
+    weight: 5
     settings:
       size: 70
       placeholder: ''
@@ -267,6 +280,20 @@ content:
     third_party_settings: {  }
     type: inline_entity_form_complex
     region: content
+  field_teaser_text:
+    weight: 7
+    settings:
+      size: 200
+      placeholder: ''
+      maxlength: 200
+      counter_position: after
+      textcount_status_message: 'Remaining characters: <span class="remaining_count">@remaining_count</span>'
+      use_field_maxlength: false
+      js_prevent_submit: false
+      count_html_characters: false
+    third_party_settings: {  }
+    type: string_textfield_with_counter
+    region: content
   field_title_icon:
     weight: 2
     settings: {  }
@@ -281,7 +308,7 @@ content:
     third_party_settings: {  }
   path:
     type: path
-    weight: 5
+    weight: 6
     region: content
     settings: {  }
     third_party_settings: {  }
