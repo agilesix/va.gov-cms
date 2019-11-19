@@ -197,7 +197,7 @@ display:
           expose:
             operator_id: langcode_op
             label: Language
-            description: 'Filter results by language.'
+            description: ''
             use_operator: false
             operator: langcode_op
             identifier: langcode
@@ -803,59 +803,6 @@ display:
           entity_type: node
           entity_field: langcode
           plugin_id: field
-        translation_link:
-          id: translation_link
-          table: node
-          field: translation_link
-          relationship: none
-          group_type: group
-          admin_label: ''
-          label: ''
-          exclude: true
-          alter:
-            alter_text: true
-            text: '<a href="/node/{{ nid }}/translations" class="button">Translate</a>'
-            make_link: false
-            path: ''
-            absolute: false
-            external: false
-            replace_spaces: false
-            path_case: none
-            trim_whitespace: false
-            alt: ''
-            rel: ''
-            link_class: ''
-            prefix: ''
-            suffix: ''
-            target: ''
-            nl2br: false
-            max_length: 0
-            word_boundary: true
-            ellipsis: true
-            more_link: false
-            more_link_text: ''
-            more_link_path: ''
-            strip_tags: false
-            trim: false
-            preserve_tags: ''
-            html: false
-          element_type: ''
-          element_class: ''
-          element_label_type: ''
-          element_label_class: ''
-          element_label_colon: false
-          element_wrapper_type: ''
-          element_wrapper_class: ''
-          element_default_classes: true
-          empty: ''
-          hide_empty: false
-          empty_zero: false
-          hide_alter_empty: true
-          text: Translate
-          output_url_as_text: 0
-          absolute: 0
-          entity_type: node
-          plugin_id: content_translation_link
         langcode:
           id: langcode
           table: node_field_data
@@ -866,7 +813,7 @@ display:
           label: Language
           exclude: false
           alter:
-            alter_text: true
+            alter_text: false
             text: '{{ langcode }}{{ translation_link }}'
             make_link: false
             path: ''
@@ -922,6 +869,59 @@ display:
           entity_type: node
           entity_field: langcode
           plugin_id: field
+        translation_link:
+          id: translation_link
+          table: node
+          field: translation_link
+          relationship: none
+          group_type: group
+          admin_label: ''
+          label: ''
+          exclude: false
+          alter:
+            alter_text: true
+            text: '<a href="/node/{{ nid }}/translations" class="button">Translate</a>'
+            make_link: false
+            path: ''
+            absolute: false
+            external: false
+            replace_spaces: false
+            path_case: none
+            trim_whitespace: false
+            alt: ''
+            rel: ''
+            link_class: ''
+            prefix: ''
+            suffix: ''
+            target: ''
+            nl2br: false
+            max_length: 0
+            word_boundary: true
+            ellipsis: true
+            more_link: false
+            more_link_text: ''
+            more_link_path: ''
+            strip_tags: false
+            trim: false
+            preserve_tags: ''
+            html: false
+          element_type: ''
+          element_class: ''
+          element_label_type: ''
+          element_label_class: ''
+          element_label_colon: false
+          element_wrapper_type: ''
+          element_wrapper_class: ''
+          element_default_classes: true
+          empty: ''
+          hide_empty: false
+          empty_zero: false
+          hide_alter_empty: true
+          text: Translate
+          output_url_as_text: 0
+          absolute: 0
+          entity_type: node
+          plugin_id: content_translation_link
         edit_node:
           id: edit_node
           table: node
